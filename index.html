@@ -64,10 +64,10 @@
     .drum-text-display {
       width: 100%;
       text-align: center;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: #0f172a;
-      line-height: 1.7;
+      line-height: 1.6;
       margin-bottom: 24px;
       min-height: 100px;
       display: flex;
@@ -179,8 +179,8 @@
 
       const data = await response.json();
 
-      if (data.error) {
-        resultText.innerText = 'エラー: ' + data.error;
+      if (!response.ok || data.error) {
+        resultText.innerText = 'APIエラー (' + response.status + '):\n' + (data.error || JSON.stringify(data));
       } else {
         resultText.innerText = data.drum_text;
 
@@ -188,7 +188,8 @@
         lastAudio.play();
       }
     } catch (e) {
-      resultText.innerText = '通信エラーが発生しました';
+      // 発生した具体的なエラー内容をそのまま画面に出力する
+      resultText.innerText = '通信失敗詳細:\n' + e.name + ': ' + e.message;
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerText = '喋らせる！';
