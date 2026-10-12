@@ -188,7 +188,6 @@
         lastAudio.play();
       }
     } catch (e) {
-      // 発生した具体的なエラー内容をそのまま画面に出力する
       resultText.innerText = '通信失敗詳細:\n' + e.name + ': ' + e.message;
     } finally {
       submitBtn.disabled = false;
