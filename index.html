@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VIVANT 音声アプリ</title>
   <style>
     * {
@@ -12,106 +12,92 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #eef2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .phone-screen {
-      width: 100%;
-      max-width: 380px;
-      height: 680px;
       background-color: #f7f9fa;
-      border-radius: 30px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      height: -webkit-fill-available;
       overflow: hidden;
-      position: relative;
-      border: 8px solid #222;
     }
     /* 上部言語バー */
     .header-lang {
       display: flex;
       background-color: #e3e8ed;
-      padding: 12px;
+      padding: 14px 16px;
       justify-content: space-around;
-      font-size: 0.9rem;
-      color: #4a5568;
-      font-weight: 600;
+      font-size: 0.95rem;
+      color: #334155;
+      font-weight: bold;
     }
     .lang-selector {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
-    /* メイン入力・表示エリア */
+    /* メインエリア */
     .content-area {
       flex: 1;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-y: auto;
     }
     /* 青いスピーカーボタン */
     .speaker-btn {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
       background-color: #1a56c4;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
-      font-size: 28px;
+      font-size: 32px;
       margin-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(26,86,196,0.3);
-      transition: transform 0.1s;
+      box-shadow: 0 6px 16px rgba(26,86,196,0.3);
     }
-    .speaker-btn:active {
-      transform: scale(0.95);
-    }
-    /* 劇中風テキスト表示 */
+    /* 劇中風テキスト表示（中央・大きめ） */
     .drum-text-display {
       width: 100%;
       text-align: center;
-      font-size: 1.15rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      color: #1a202c;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      min-height: 120px;
+      color: #0f172a;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      min-height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
       white-space: pre-wrap;
+      word-break: break-all;
     }
-    /* テキスト入力欄 */
+    /* 入力フォーム */
     textarea {
       width: 100%;
-      height: 90px;
+      height: 80px;
       border: 1px solid #cbd5e1;
       border-radius: 12px;
-      padding: 10px;
-      font-size: 0.95rem;
+      padding: 12px;
+      font-size: 1rem;
       resize: none;
       outline: none;
       background-color: #ffffff;
     }
-    /* 喋らせる実行ボタン */
+    /* 実行ボタン */
     .send-btn {
       width: 100%;
-      margin-top: 10px;
-      padding: 12px;
+      margin-top: 12px;
+      padding: 14px;
       background-color: #1a56c4;
       color: white;
       border: none;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: bold;
       cursor: pointer;
     }
@@ -120,7 +106,7 @@
     }
     /* 下部ナビゲーションバー */
     .bottom-nav {
-      height: 60px;
+      height: 64px;
       background-color: #ffffff;
       border-top: 1px solid #e2e8f0;
       display: flex;
@@ -128,21 +114,22 @@
       align-items: center;
       color: #64748b;
       font-size: 0.75rem;
+      padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
     }
     .nav-item.active {
       color: #1a56c4;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<div class="phone-screen">
   <!-- ヘッダー -->
   <div class="header-lang">
     <div class="lang-selector">日本語 <span>▼</span></div>
@@ -151,15 +138,12 @@
 
   <!-- コンテンツ領域 -->
   <div class="content-area">
-    <!-- 劇中風 青いスピーカーボタン -->
-    <button class="speaker-btn" id="playBtn" onclick="playCurrentAudio()" title="再再生">🔊</button>
+    <button class="speaker-btn" id="playBtn" onclick="playCurrentAudio()">🔊</button>
 
-    <!-- ドラムのセリフ表示欄（劇中の縦並びっぽいテキスト） -->
     <div class="drum-text-display" id="resultText">
       ここにドラムのセリフが<br>表示されます
     </div>
 
-    <!-- 入力フォーム -->
     <textarea id="inputText" placeholder="ドラムに喋らせたい文章を入力..."></textarea>
     <button class="send-btn" id="submitBtn" onclick="generateVoice()">喋らせる！</button>
   </div>
@@ -170,10 +154,9 @@
     <div class="nav-item active">🔊 <span>会話</span></div>
     <div class="nav-item">⭐ <span>お気に入り</span></div>
   </div>
-</div>
 
 <script>
-  const API_URL = 'https://vivant-drum-117944032529.asia-northeast2.run.app'; // ※ご自身のエンドポイントURL
+  const API_URL = 'https://vivant-drum-117944023129.asia-northeast2.run.app';
   let lastAudio = null;
 
   async function generateVoice() {
@@ -199,10 +182,8 @@
       if (data.error) {
         resultText.innerText = 'エラー: ' + data.error;
       } else {
-        // 改行を含めて見やすく表示
         resultText.innerText = data.drum_text;
 
-        // 音声データを保持・再生
         lastAudio = new Audio('data:audio/mp3;base64,' + data.audio_base64);
         lastAudio.play();
       }
